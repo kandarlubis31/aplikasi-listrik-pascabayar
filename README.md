@@ -30,4 +30,4 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 3. **Konfigurasi**: Edit `database_connector.py` & `app.py` (SECRET_KEY, koneksi DB, format_rupiah).
 4. **Deploy (PythonAnywhere)**: Atur path project, WSGI file, environment variable, dan reload aplikasi.
 
-Database Kirim Email ke: kandarlubis31@gmail.com
+Database? Kirim Email ke: kandarlubis31@gmail.com
