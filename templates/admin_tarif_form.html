@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Tarif Listrik{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2>Edit Data Tarif Listrik</h2>
+        <form method="POST" action="{{ url_for('admin_edit_tarif', id_tarif=tarif.id_tarif) }}">
+            <div class="form-group">
+                <label for="id_tarif">ID Tarif:</label>
+                <input type="text" id="id_tarif" name="id_tarif" value="{{ tarif.id_tarif }}" readonly aria-label="ID Tarif (Tidak bisa diubah)">
+            </div>
+            <div class="form-group">
+                <label for="daya">Daya (Watt):</label>
+                <input type="number" id="daya" name="daya" value="{{ tarif.daya }}" required aria-label="Daya listrik dalam Watt">
+            </div>
+            <div class="form-group">
+                <label for="tarifperkwh">Tarif per KWH:</label>
+                <input type="text" id="tarifperkwh" name="tarifperkwh" value="{{ tarif.tarifperkwh }}" required aria-label="Tarif per KWH (gunakan titik sebagai desimal, contoh: 1500.50)">
+            </div>
+            <div class="form-group">
+                <label for="biaya_beban">Biaya Beban:</label>
+                <input type="text" id="biaya_beban" name="biaya_beban" value="{{ tarif.biaya_beban }}" required aria-label="Biaya beban (gunakan titik sebagai desimal, contoh: 25000.00)">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Tarif</button>
+        </form>
+        <p style="margin-top: 20px;"><a href="{{ url_for('admin_tarif_list') }}" class="btn btn-secondary">Kembali ke Daftar Tarif</a></p>
+    </div>
+{% endblock %}

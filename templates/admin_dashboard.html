@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2>Selamat Datang, {{ nama_admin }} ({{ username }})</h2>
+        <p style="text-align: right;"><a href="{{ url_for('logout') }}" class="button">Logout</a></p>
+
+        <h3>Menu Admin</h3>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin_add_pelanggan') }}">Tambah Pelanggan</a></li>
+            <li><a href="{{ url_for('admin_penggunaan_list') }}">Manajemen Penggunaan</a></li>
+            <li><a href="{{ url_for('admin_tarif_list') }}">Manajemen Tarif</a></li>
+        </ul>
+
+        <h3>Statistik Ringkas</h3>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h4>Total Pelanggan</h4>
+                <p>{{ pelanggans|length }}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Total User Admin</h4>
+                <p>{{ users|length }}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Jumlah Tarif</h4>
+                <p>{{ tarifs|length }}</p>
+            </div>
+        </div>
+
+        <h3>Data Pelanggan</h3>
+        {% if pelanggans %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nomor KWH</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Alamat</th>
+                        <th>ID Tarif</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pelanggans %}
+                    <tr>
+                        <td>{{ p.id_pelanggan }}</td>
+                        <td>{{ p.username }}</td>
+                        <td>{{ p.nomor_kwh }}</td>
+                        <td>{{ p.nama_pelanggan }}</td>
+                        <td>{{ p.alamat }}</td>
+                        <td>{{ p.id_tarif }}</td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('admin_edit_pelanggan', id_pelanggan=p.id_pelanggan) }}">Edit</a>
+                            <form action="{{ url_for('admin_delete_pelanggan', id_pelanggan=p.id_pelanggan) }}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Yakin ingin menghapus pelanggan ini?')" class="delete-btn">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Tidak ada data pelanggan.</p>
+        {% endif %}
+
+        <h3>Data User Admin/Petugas</h3>
+        {% if users %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID User</th>
+                        <th>Username</th>
+                        <th>Nama Admin</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.id_user }}</td>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.nama_admin }}</td>
+                        <td>{{ u.nama_level }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Tidak ada data user admin/petugas.</p>
+        {% endif %}
+    </div>
+{% endblock %}

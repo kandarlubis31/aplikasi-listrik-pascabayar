@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form_action == 'add' %}Tambah Pelanggan{% else %}Edit Pelanggan{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2>{% if form_action == 'add' %}Tambah Pelanggan Baru{% else %}Edit Data Pelanggan{% endif %}</h2>
+        <form method="POST" action="{% if form_action == 'add' %}{{ url_for('admin_add_pelanggan') }}{% else %}{{ url_for('admin_edit_pelanggan', id_pelanggan=pelanggan.id_pelanggan) }}{% endif %}">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="{{ pelanggan.username if pelanggan else '' }}" {% if form_action == 'edit' %}readonly aria-label="Username pelanggan (Tidak bisa diubah)"{% else %}required aria-label="Masukkan username pelanggan"{% endif %}>
+            </div>
+            {% if form_action == 'add' %}
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required aria-label="Masukkan password pelanggan">
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="nomor_kwh">Nomor KWH:</label>
+                <input type="text" id="nomor_kwh" name="nomor_kwh" value="{{ pelanggan.nomor_kwh if pelanggan else '' }}" {% if form_action == 'edit' %}readonly aria-label="Nomor KWH pelanggan (Tidak bisa diubah)"{% else %}required aria-label="Masukkan nomor KWH pelanggan"{% endif %}>
+            </div>
+            <div class="form-group">
+                <label for="nama_pelanggan">Nama Pelanggan:</label>
+                <input type="text" id="nama_pelanggan" name="nama_pelanggan" value="{{ pelanggan.nama_pelanggan if pelanggan else '' }}" required aria-label="Masukkan nama lengkap pelanggan">
+            </div>
+            <div class="form-group">
+                <label for="alamat">Alamat:</label>
+                <input type="text" id="alamat" name="alamat" value="{{ pelanggan.alamat if pelanggan else '' }}" required aria-label="Masukkan alamat lengkap pelanggan">
+            </div>
+            <div class="form-group">
+                <label for="id_tarif">ID Tarif:</label>
+                <select id="id_tarif" name="id_tarif" required aria-label="Pilih ID Tarif untuk pelanggan">
+                    {% for t in tariffs %}
+                    <option value="{{ t.id_tarif }}" {% if pelanggan and pelanggan.id_tarif == t.id_tarif %}selected{% endif %}>
+                        {{ t.id_tarif }} - {{ t.daya }} Watt
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">{% if form_action == 'add' %}Tambah Pelanggan{% else %}Update Pelanggan{% endif %}</button>
+        </form>
+        <p style="margin-top: 20px;"><a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a></p>
+    </div>
+{% endblock %}

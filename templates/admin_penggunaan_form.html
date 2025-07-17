@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form_action == 'add' %}Tambah Penggunaan Listrik Baru{% else %}Edit Data Penggunaan Listrik{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2>{% if form_action == 'add' %}Tambah Penggunaan Listrik Baru{% else %}Edit Data Penggunaan Listrik{% endif %}</h2>
+        <form method="POST" action="{% if form_action == 'add' %}{{ url_for('admin_add_penggunaan') }}{% else %}{{ url_for('admin_edit_penggunaan', id_penggunaan=penggunaan.id_penggunaan) }}{% endif %}" autocomplete="off" id="adminPenggunaanForm"> {# Tambahkan ID form #}
+            <div class="form-group">
+                <label for="id_pelanggan">ID Pelanggan:</label>
+                <select id="id_pelanggan" name="id_pelanggan" required {% if form_action == 'edit' %}disabled aria-label="ID Pelanggan (Tidak bisa diubah)"{% endif %}>
+                    {% for p in pelanggans %}
+                    <option value="{{ p.id_pelanggan }}" {% if form_action == 'edit' and penggunaan.id_pelanggan == p.id_pelanggan %}selected{% endif %}>
+                        {{ p.id_pelanggan }} - {{ p.nama_pelanggan }} ({{ p.nomor_kwh }})
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if form_action == 'edit' %}
+                    <input type="hidden" name="id_pelanggan" value="{{ penggunaan.id_pelanggan }}">
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="bulan">Bulan (1-12):</label>
+                <input type="number" id="bulan" name="bulan" min="1" max="12" value="{{ penggunaan.bulan if penggunaan else '' }}" required aria-label="Bulan penggunaan listrik, angka 1 sampai 12">
+            </div>
+            <div class="form-group">
+                <label for="tahun">Tahun (YYYY):</label>
+                <input type="number" id="tahun" name="tahun" min="2000" max="2100" value="{{ penggunaan.tahun if penggunaan else '' }}" required aria-label="Tahun penggunaan listrik, contoh 2024">
+            </div>
+            <div class="form-group">
+                <label for="meter_awal">Meter Awal:</label>
+                <input type="number" id="meter_awal" name="meter_awal" value="{{ penggunaan.meter_awal if penggunaan else '' }}" required aria-label="Pembacaan meter awal">
+            </div>
+            <div class="form-group">
+                <label for="meter_akhir">Meter Akhir:</label>
+                <input type="number" id="meter_akhir" name="meter_akhir" value="{{ penggunaan.meter_akhir if penggunaan else '' }}" required aria-label="Pembacaan meter akhir">
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                {% if form_action == 'add' %}Tambah Penggunaan{% else %}Update Penggunaan{% endif %}
+            </button>
+        </form>
+        <p style="margin-top: 20px;"><a href="{{ url_for('admin_penggunaan_list') }}" class="btn btn-secondary">Kembali ke Daftar Penggunaan</a></p>
+
+        </div>
+{% endblock %}

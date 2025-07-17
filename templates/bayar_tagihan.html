@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Pembayaran Tagihan{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2 class="page-title">Pembayaran Tagihan Listrik</h2>
+
+        <div class="progress-indicator" role="progressbar" aria-label="Proses pembayaran" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-name">Detail Tagihan</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-name">Konfirmasi Bayar</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-name">Selesai</div>
+            </div>
+        </div>
+
+        <form id="paymentForm" method="POST" action="{{ url_for('bayar_tagihan', id_tagihan=tagihan.id_tagihan) }}" data-total-tagihan-final="{{ tagihan.total_tagihan_final if tagihan else '0.0' }}">
+            {# STEP 1: Detail Tagihan #}
+            <div class="payment-step-content" id="step1" role="tabpanel" aria-labelledby="step1-tab">
+                <h3>Detail Tagihan</h3>
+                {% if tagihan %}
+                    <table class="detail-table" aria-label="Detail informasi tagihan">
+                        <tr><th>ID Tagihan</th><td>{{ tagihan.id_tagihan }}</td></tr>
+                        <tr><th>Nomor KWH</th><td>{{ tagihan.nomor_kwh }}</td></tr>
+                        <tr><th>Nama Pelanggan</th><td>{{ tagihan.nama_pelanggan }}</td></tr>
+                        <tr><th>Periode</th><td>{{ tagihan.bulan }}/{{ tagihan.tahun }}</td></tr>
+                        <tr><th>Meter Awal</th><td>{{ tagihan.meter_awal }}</td></tr>
+                        <tr><th>Meter Akhir</th><td>{{ tagihan.meter_akhir }}</td></tr>
+                        <tr><th>KWH Terpakai</th><td>{{ tagihan.jumlah_meter }} kWh</td></tr>
+                        <tr><th>Daya / Tarif</th><td>{{ tagihan.daya }} Watt ({{ tagihan.tarifperkwh|rupiah }}/kWh)</td></tr>
+                        <tr><th>Biaya Beban</th><td>{{ tagihan.biaya_beban|rupiah }}</td></tr>
+                        <tr><th>Total Tagihan</th><td><strong>{{ tagihan.total_tagihan_final|rupiah }}</strong></td></tr>
+                        <tr><th>Status</th><td>{{ tagihan.status }}</td></tr>
+                    </table>
+                {% else %}
+                    <p>Detail tagihan tidak ditemukan.</p>
+                {% endif %}
+                <button type="button" id="nextStepBtn" class="btn btn-primary">Selanjutnya</button>
+            </div>
+
+            {# STEP 2: Form Pembayaran #}
+            <div class="payment-step-content" id="step2" style="display: none;" role="tabpanel" aria-labelledby="step2-tab">
+                <h3>Konfirmasi Pembayaran</h3>
+                <div class="form-group">
+                    <label for="biaya_admin">Biaya Admin:</label>
+                    <input type="text" id="biaya_admin" name="biaya_admin" value="2500.000" readonly aria-label="Biaya admin tetap">
+                </div>
+                <div class="form-group">
+                    <label for="total_bayar">Jumlah Bayar:</label>
+                    <input type="number" step="0.001" id="total_bayar" name="total_bayar" placeholder="Masukkan jumlah bayar" required aria-label="Masukkan jumlah uang yang ingin dibayarkan">
+                </div>
+                <button type="button" id="prevStepBtn" class="btn btn-secondary">Sebelumnya</button>
+                <button type="submit" id="submitPaymentBtn" class="btn btn-primary">Bayar Sekarang</button>
+            </div>
+        </form>
+        <p style="text-align: center; margin-top: 20px;"><a href="{{ url_for('pelanggan_dashboard') }}" class="btn delete-btn">Batalkan Pembayaran</a></p>
+    </div>
+{% endblock %}

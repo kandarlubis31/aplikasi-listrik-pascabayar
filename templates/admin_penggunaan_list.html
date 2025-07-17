@@ -1,0 +1,165 @@
+{% extends "base.html" %} {% block title %}Manajemen Penggunaan Listrik{%
+endblock %} {% block head %} {{ super() }}
+<style>
+  /* Sedikit CSS biar rapih dan statusnya jelas */
+  .status-lunas {
+    color: green;
+    font-weight: bold;
+  }
+  .status-belum-lunas {
+    color: red;
+    font-weight: bold;
+  }
+  .status-info {
+    color: blue;
+    font-style: italic;
+  } /* Untuk 'Belum Ada Tagihan' */
+
+  .action-buttons .btn {
+    padding: 6px 12px;
+    margin: 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.85em; /* Biar tombolnya nggak terlalu besar */
+  }
+  .action-buttons .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  .action-buttons .delete-btn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+  .action-buttons .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+  }
+  .action-buttons .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+
+  .no-action-text {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.9em;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="app-content-container card">
+  <h2 class="page-title">Manajemen Penggunaan Listrik</h2>
+  <p class="text-right margin-top-large">
+    <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a> |
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"
+      >Kembali ke Dashboard</a
+    >
+  </p>
+
+  <h3>Daftar Penggunaan Listrik</h3>
+  <p>
+    <a href="{{ url_for('admin_add_penggunaan') }}" class="btn btn-primary"
+      >Tambah Penggunaan Baru</a
+    >
+  </p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div class="alert alert-{{ category }}">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %} {% if penggunaan_data %}
+  <div class="table-responsive">
+    <table aria-label="Daftar penggunaan listrik yang tercatat">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nama Pelanggan</th>
+          <th>Bulan</th>
+          <th>Tahun</th>
+          <th>Meter Awal</th>
+          <th>Meter Akhir</th>
+          <th>KWH Terpakai</th>
+          <th>Total Tagihan</th>
+          <th>Status Pembayaran</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pg in penggunaan_data %}
+        <tr>
+          <td data-label="ID">{{ pg.id_penggunaan }}</td>
+          <td data-label="Nama Pelanggan">{{ pg.nama_pelanggan }}</td>
+          <td data-label="Bulan">{{ pg.bulan }}</td>
+          <td data-label="Tahun">{{ pg.tahun }}</td>
+          <td data-label="Meter Awal">{{ pg.meter_awal }}</td>
+          <td data-label="Meter Akhir">{{ pg.meter_akhir }}</td>
+          <td data-label="KWH Terpakai">{{ pg.jumlah_kwh }}</td>
+          <td data-label="Total Tagihan">
+            {{ pg.total_tagihan_hitung | rupiah }}
+          </td>
+          <td data-label="Status Pembayaran">
+            {% if pg.status_pembayaran == 'sudah_bayar' %}
+            <span class="status-lunas">Lunas</span>
+            {% elif pg.status_pembayaran == 'belum_bayar' %}
+            <span class="status-belum-lunas">Belum Lunas</span>
+            {% else %}
+            <span class="status-info">{{ pg.status_pembayaran }}</span> {% endif
+            %}
+          </td>
+          <td data-label="Aksi" class="action-buttons">
+            {% if pg.status_pembayaran == 'sudah_bayar' %}
+            <span class="no-action-text">Lunas</span>
+            {% elif pg.status_pembayaran == 'belum_bayar' %}
+            <a
+              href="{{ url_for('admin_edit_penggunaan', id_penggunaan=pg.id_penggunaan) }}"
+              class="btn btn-primary btn-small"
+              >Edit</a
+            >
+            <form
+              action="{{ url_for('admin_delete_penggunaan', id_penggunaan=pg.id_penggunaan) }}"
+              method="POST"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                onclick="return confirm('Yakin ingin menghapus penggunaan ini? Ini akan menghapus tagihan terkait juga.')"
+                class="btn delete-btn btn-small"
+              >
+                Hapus
+              </button>
+            </form>
+            {% else %}
+            <span class="no-action-text">Perlu Tindakan</span>
+            <a
+              href="{{ url_for('admin_edit_penggunaan', id_penggunaan=pg.id_penggunaan) }}"
+              class="btn btn-primary btn-small"
+              >Edit</a
+            >
+            <form
+              action="{{ url_for('admin_delete_penggunaan', id_penggunaan=pg.id_penggunaan) }}"
+              method="POST"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                onclick="return confirm('Yakin ingin menghapus penggunaan ini? Ini akan menghapus tagihan terkait juga.')"
+                class="btn delete-btn btn-small"
+              >
+                Hapus
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p>Tidak ada data penggunaan listrik.</p>
+  {% endif %}
+</div>
+{% endblock %}

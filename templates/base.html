@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplikasi pembayaran listrik pascabayar. Kelola tagihan, pantau penggunaan, dan bayar dengan mudah.">
+    <meta name="keywords" content="pembayaran listrik, tagihan listrik, listrik pascabayar, PLN, aplikasi tagihan">
+    <meta name="author" content="Tim Aplikasi Listrik">
+
+    <title>{% block title %}Aplikasi Pembayaran Listrik{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    {% block head %}{% endblock %} {# Block head untuk CSS/JS tambahan per halaman #}
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages-container">
+            {% for category, message in messages %}
+            <div class="flash-message flash-message-{{ category }}" role="alert">
+                {{ message }}
+                <button type="button" class="flash-close-btn" aria-label="Tutup notifikasi">×</button>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <header class="main-header">
+        <nav class="navbar">
+            <a href="{{ url_for('login') }}" class="app-brand" aria-label="Halaman Login Aplikasi Pembayaran Listrik">
+                <span class="app-icon" aria-hidden="true">⚡</span>
+                <span class="app-name">ListrikPascabayar</span>
+            </a>
+            <div class="nav-links-main">
+                {# Navigasi utama bisa ditaruh di sini jika ada #}
+            </div>
+            {% if session.get('logged_in') %}
+            <div class="user-info-header">
+                Halo, {{ session.get('username') }}!
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-small">Logout</a>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="page-content-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; {{ moment().format('YYYY') }} Listrik Pascabayar. Hak Cipta Dilindungi.</p>
+            <nav class="footer-nav" aria-label="Navigasi footer">
+                <a href="#">Kebijakan Privasi</a> |
+                <a href="#">Syarat dan Ketentuan</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>

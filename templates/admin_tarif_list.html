@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Manajemen Tarif Listrik{% endblock %}
+
+{% block content %}
+    <div class="app-content-container card">
+        <h2 class="page-title">Manajemen Tarif Listrik</h2>
+        <p class="text-right margin-top-large"><a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a> | <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a></p>
+
+        <h3>Daftar Tarif</h3>
+        {% if tarifs %}
+            <div class="table-responsive">
+                <table aria-label="Daftar tarif listrik yang tersedia">
+                    <thead>
+                        <tr>
+                            <th>ID Tarif</th>
+                            <th>Daya (Watt)</th>
+                            <th>Tarif per KWH</th>
+                            <th>Biaya Beban</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tarifs %}
+                        <tr>
+                            <td data-label="ID Tarif">{{ t.id_tarif }}</td>
+                            <td data-label="Daya (Watt)">{{ t.daya }}</td>
+                            <td data-label="Tarif per KWH">{{ t.tarifperkwh|rupiah }}</td>
+                            <td data-label="Biaya Beban">{{ t.biaya_beban|rupiah }}</td>
+                            <td data-label="Aksi" class="action-buttons">
+                                <a href="{{ url_for('admin_edit_tarif', id_tarif=t.id_tarif) }}" class="btn btn-primary btn-small">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>Tidak ada data tarif.</p>
+        {% endif %}
+    </div>
+{% endblock %}
