@@ -1,150 +1,143 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Dashboard Pelanggan{% endblock %} {%
+block head %} {{ super() }}
+<style>
+  /* CSS yang sudah ada sebelumnya */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .card-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  .card-item h4 {
+    margin-top: 0;
+    color: #333;
+  }
+  .card-item .data-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #007bff; /* Warna utama untuk nilai data */
+  }
+  /* Style untuk area grafik */
+  .chart-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    position: relative;
+    height: 400px; /* Atur tinggi grafik */
+    width: 100%; /* Atur lebar grafik */
+    max-width: 800px; /* Batasi lebar maksimum */
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="app-content-container card">
+  <h2 class="page-title">Selamat Datang, {{ nama_pelanggan }}</h2>
+  <p class="text-right margin-top-large">
+    <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+  </p>
 
-{% block title %}Dashboard Pelanggan{% endblock %}
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div class="alert alert-{{ category }}">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %}
 
-{% block head %}
-    {{ super() }}
-    <style>
-        /* CSS yang sudah ada sebelumnya */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .card-item {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .card-item h4 {
-            margin-top: 0;
-            color: #333;
-        }
-        .card-item .data-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #007bff; /* Warna utama untuk nilai data */
-        }
-        /* Style untuk area grafik */
-        .chart-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 30px;
-            position: relative;
-            height: 400px; /* Atur tinggi grafik */
-            width: 100%; /* Atur lebar grafik */
-            max-width: 800px; /* Batasi lebar maksimum */
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
-{% endblock %}
-
-{% block content %}
-    <div class="app-content-container card">
-        <h2 class="page-title">Selamat Datang, {{ nama_pelanggan }}</h2>
-        <p class="text-right margin-top-large">
-            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
-        </p>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <h3>Ringkasan Tagihan & Penggunaan</h3>
-        <div class="card-grid">
-            <div class="card-item">
-                <h4>Tagihan Belum Lunas</h4>
-                <p class="data-value">{{ total_tagihan_belum_lunas | rupiah }}</p>
-            </div>
-            <div class="card-item">
-                <h4>Total Penggunaan (kWh)</h4>
-                <p class="data-value">{{ total_penggunaan_kwh }}</p>
-            </div>
-            <div class="card-item">
-                <h4>Total Tagihan Umum</h4>
-                <p class="data-value">
-                    {% if total_tagihan_keseluruhan is defined %}
-                        {{ total_tagihan_keseluruhan | rupiah }}
-                    {% else %}
-                        {% set total_semua_tagihan = 0 %}
-                        {% for item in riwayat %}
-                            {% set total_semua_tagihan = total_semua_tagihan + item.total_tagihan_final %}
-                        {% endfor %}
-                        {{ total_semua_tagihan | rupiah }}
-                    {% endif %}
-                </p>
-            </div>
-        </div>
-
-        <h3>Riwayat Tagihan & Penggunaan</h3>
-        {% if riwayat %}
-            <div class="table-responsive">
-                <table aria-label="Riwayat penggunaan dan tagihan pelanggan">
-                    <thead>
-                        <tr>
-                            <th>Bulan/Tahun</th>
-                            <th>Meter Awal</th>
-                            <th>Meter Akhir</th>
-                            <th>KWH Terpakai</th>
-                            <th>Total Tagihan</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in riwayat %}
-                        <tr>
-                            <td data-label="Bulan/Tahun">{{ item.bulan }}/{{ item.tahun }}</td>
-                            <td data-label="Meter Awal">{{ item.meter_awal }}</td>
-                            <td data-label="Meter Akhir">{{ item.meter_akhir }}</td>
-                            <td data-label="KWH Terpakai">{{ item.jumlah_meter }}</td>
-                            <td data-label="Total Tagihan">{{ item.total_tagihan_final | rupiah }}</td>
-                            <td data-label="Status">
-                                {% if item.status_tagihan == 'sudah_bayar' %}
-                                    <span style="color: green; font-weight: bold;">Lunas</span>
-                                {% else %}
-                                    <span style="color: red; font-weight: bold;">Belum Lunas</span>
-                                {% endif %}
-                            </td>
-                            <td data-label="Aksi">
-                                {% if item.status_tagihan != 'sudah_bayar' %}
-                                    <a href="{{ url_for('bayar_tagihan', id_tagihan=item.id_tagihan) }}" class="btn btn-primary btn-small">Bayar</a>
-                                {% else %}
-                                    <span style="color: grey;">Sudah Dibayar</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>Tidak ada riwayat penggunaan atau tagihan.</p>
-        {% endif %}
-
-        <h3>Grafik Penggunaan & Tagihan Bulanan</h3>
-        <div class="chart-container">
-            <canvas id="monthlyUsageChart"></canvas>
-        </div>
-
-        {# PENTING: Mendefinisikan dataChartJs secara global di sini #}
-        {# Ini akan dieksekusi sebelum script.js, karena script.js ada di footer base.html #}
-        <script>
-            // Data JSON dilewatkan langsung ke variabel JavaScript
-            // Gunakan | tojson | safe untuk memastikan string JSON valid
-            window.dataChartJs = {{ monthly_data_for_chart | tojson | safe }};
-            // Log ini untuk debugging tambahan
-            console.log("window.dataChartJs (from HTML inline script):", window.dataChartJs);
-        </script>
+  <h3>Ringkasan Tagihan & Penggunaan</h3>
+  <div class="card-grid">
+    <div class="card-item">
+      <h4>Tagihan Belum Lunas</h4>
+      <p class="data-value">{{ total_tagihan_belum_lunas | rupiah }}</p>
     </div>
+    <div class="card-item">
+      <h4>Total Penggunaan (kWh)</h4>
+      <p class="data-value">{{ total_penggunaan_kwh }}</p>
+    </div>
+    <div class="card-item">
+      <h4>Total Tagihan Umum</h4>
+      <p class="data-value">
+        {% if total_tagihan_keseluruhan is defined %} {{
+        total_tagihan_keseluruhan | rupiah }} {% else %} {% set
+        total_semua_tagihan = 0 %} {% for item in riwayat %} {% set
+        total_semua_tagihan = total_semua_tagihan + item.total_tagihan_final %}
+        {% endfor %} {{ total_semua_tagihan | rupiah }} {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <h3>Riwayat Tagihan & Penggunaan</h3>
+  {% if riwayat %}
+  <div class="table-responsive">
+    <table aria-label="Riwayat penggunaan dan tagihan pelanggan">
+      <thead>
+        <tr>
+          <th>Bulan/Tahun</th>
+          <th>Meter Awal</th>
+          <th>Meter Akhir</th>
+          <th>KWH Terpakai</th>
+          <th>Total Tagihan</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in riwayat %}
+        <tr>
+          <td data-label="Bulan/Tahun">{{ item.bulan }}/{{ item.tahun }}</td>
+          <td data-label="Meter Awal">{{ item.meter_awal }}</td>
+          <td data-label="Meter Akhir">{{ item.meter_akhir }}</td>
+          <td data-label="KWH Terpakai">{{ item.jumlah_meter }}</td>
+          <td data-label="Total Tagihan">
+            {{ item.total_tagihan_final | rupiah }}
+          </td>
+          <td data-label="Status">
+            {% if item.status_tagihan == 'sudah_bayar' %}
+            <span style="color: green; font-weight: bold">Lunas</span>
+            {% else %}
+            <span style="color: red; font-weight: bold">Belum Lunas</span>
+            {% endif %}
+          </td>
+          <td data-label="Aksi">
+            {% if item.status_tagihan != 'sudah_bayar' %}
+            <a
+              href="{{ url_for('bayar_tagihan', id_tagihan=item.id_tagihan) }}"
+              class="btn btn-primary btn-small"
+              >Bayar</a
+            >
+            {% else %}
+            <span style="color: grey">Sudah Dibayar</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p>Tidak ada riwayat penggunaan atau tagihan.</p>
+  {% endif %}
+
+  <h3>Grafik Penggunaan & Tagihan Bulanan</h3>
+  <div class="chart-container">
+    <canvas id="monthlyUsageChart"></canvas>
+  </div>
+
+  {# PENTING: Mendefinisikan dataChartJs secara global di sini #} {# Ini akan
+  dieksekusi sebelum script.js, karena script.js ada di footer base.html #}
+  <script>
+    // Data JSON dilewatkan langsung ke variabel JavaScript
+    // Gunakan | tojson | safe untuk memastikan string JSON valid
+    window.dataChartJs = {{ monthly_data_for_chart | tojson | safe }};
+    // Log ini untuk debugging tambahan
+    console.log("window.dataChartJs (from HTML inline script):", window.dataChartJs);
+  </script>
+</div>
 {% endblock %}
