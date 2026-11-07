@@ -20,14 +20,18 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 ## 📁 Struktur Proyek (Ringkas)
 - `app.py` - Routing utama
 - `models.py` - Query & logika CRUD
+- `auth_service.py` - Login & hashing password
+- `database_connector.py` - Koneksi MySQL
+- `config.py` - Pembacaan konfigurasi dari `.env`
+- `.env.example` - Template konfigurasi (salin jadi `.env`)
 - `templates/` - HTML halaman login, dashboard, form, pembayaran
 - `static/` - style.css & script.js
-- `bayarlistrik_db.sql` - Struktur dan data awal database
 
 ## ⚙️ Instalasi Cepat
-1. **Database**: Buat DB `bayarlistrik_db`, impor SQL, ubah kolom `id_pelanggan` jadi BIGINT, tambahkan kolom `total_tagihan`, perbarui trigger & function hitung tagihan.
-2. **Python**: Clone repo, buat virtualenv, install dependensi (`Flask`, `mysql-connector-python`, dll).
+1. **Database**: Buat DB `bayarlistrik_db` di MySQL/MariaDB. Skema (tabel, trigger, view, function hitung tagihan) **tidak disertakan di repo ini**, jadi siapkan manual atau impor dump yang kamu simpan sendiri. Pastikan kolom `id_pelanggan` bertipe BIGINT dan kolom `total_tagihan` ada.
+2. **Python**: Clone repo, buat virtualenv, lalu `pip install -r requirements.txt`.
 3. **Konfigurasi**: salin `.env.example` menjadi `.env`, lalu isi `SECRET_KEY` dan kredensial MySQL di sana. File `.env` sudah di-ignore git, jadi kredensial tidak ikut ter-commit.
-4. **Deploy (PythonAnywhere)**: Atur path project, WSGI file, environment variable, dan reload aplikasi.
+4. **Jalankan**: `python app.py` (default di `http://localhost:5000`).
+5. **Deploy (PythonAnywhere)**: Atur path project, WSGI file, environment variable, dan reload aplikasi.
 
 Database? Kirim Email ke: kandarlubis31@gmail.com
