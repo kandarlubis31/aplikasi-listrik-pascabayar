@@ -1,4 +1,3 @@
-import os
 import decimal
 from datetime import datetime
 import mysql.connector
@@ -7,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_moment import Moment
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+import config
 import database_connector
 import auth_service
 import models
@@ -15,7 +15,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24) 
+app.secret_key = config.SECRET_KEY
 moment = Moment(app)
 
 login_manager = LoginManager()
@@ -156,16 +156,15 @@ def login():
 # --- Start: Debug Login Routes (HANYA UNTUK PENGEMBANGAN!) ---
 @app.route('/debug_login_admin')
 def debug_login_admin():
-    if app.debug:
+    if app.debug and config.DEBUG_LOGIN_ENABLED and config.DEBUG_ADMIN_USER:
         db_conn = get_db_and_handle_error()
         if not db_conn:
             flash("Gagal koneksi database untuk debug login.", "danger")
             return redirect(url_for('login'))
         
-        username_dev = "admin" # GANTI DENGAN USERNAME ADMIN YANG ADA DI DB KAMU
-        password_dev = "admin" # GANTI DENGAN PASSWORD ADMIN YANG ADA DI DB KAMU (Plaintext, ini hanya untuk login sementara!)
-
-        user_data = auth_service.login_user(db_conn, username_dev, password_dev)
+        user_data = auth_service.login_user(
+            db_conn, config.DEBUG_ADMIN_USER, config.DEBUG_ADMIN_PASSWORD
+        )
         db_conn.close()
 
         if user_data:

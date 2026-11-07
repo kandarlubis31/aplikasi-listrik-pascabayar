@@ -27,7 +27,7 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 ## ⚙️ Instalasi Cepat
 1. **Database**: Buat DB `bayarlistrik_db`, impor SQL, ubah kolom `id_pelanggan` jadi BIGINT, tambahkan kolom `total_tagihan`, perbarui trigger & function hitung tagihan.
 2. **Python**: Clone repo, buat virtualenv, install dependensi (`Flask`, `mysql-connector-python`, dll).
-3. **Konfigurasi**: Edit `database_connector.py` & `app.py` (SECRET_KEY, koneksi DB, format_rupiah).
+3. **Konfigurasi**: salin `.env.example` menjadi `.env`, lalu isi `SECRET_KEY` dan kredensial MySQL di sana. File `.env` sudah di-ignore git, jadi kredensial tidak ikut ter-commit.
 4. **Deploy (PythonAnywhere)**: Atur path project, WSGI file, environment variable, dan reload aplikasi.
 
 Database? Kirim Email ke: kandarlubis31@gmail.com
