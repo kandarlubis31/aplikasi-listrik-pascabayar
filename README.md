@@ -1,9 +1,9 @@
 
-# ⚡ Aplikasi Pembayaran Listrik Pascabayar
+# Aplikasi Pembayaran Listrik Pascabayar
 
 Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan membayar tagihan listrik bulanan. Dibuat dengan Flask dan MySQL, sistem ini mendukung login multi-level, manajemen pelanggan, pencatatan otomatis, dashboard interaktif, dan proses pembayaran online.
 
-## ✨ Fitur Utama (Ringkasan)
+## Fitur Utama (Ringkasan)
 - Login aman (admin & pelanggan)
 - CRUD data pelanggan & penggunaan
 - Tagihan otomatis dengan trigger & function
@@ -12,12 +12,12 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 - Validasi data & UI responsif
 - Format Rupiah untuk semua nilai uang
 
-## 🚀 Teknologi
+## Teknologi
 - **Backend**: Flask, MySQL, Flask-Login, hashlib, decimal
 - **Frontend**: HTML, CSS, JS, Chart.js, Font Awesome
 - **Database**: MySQL/MariaDB + Trigger, View, Function
 
-## 📁 Struktur Proyek (Ringkas)
+## Struktur Proyek (Ringkas)
 - `app.py` - Routing utama
 - `models.py` - Query & logika CRUD
 - `auth_service.py` - Login & hashing password
@@ -27,7 +27,7 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 - `templates/` - HTML halaman login, dashboard, form, pembayaran
 - `static/` - style.css & script.js
 
-## ⚙️ Instalasi Cepat
+## Instalasi Cepat
 1. **Database**: Buat DB `bayarlistrik_db` di MySQL/MariaDB. Skema (tabel, trigger, view, function hitung tagihan) **tidak disertakan di repo ini**, jadi siapkan manual atau impor dump yang kamu simpan sendiri. Pastikan kolom `id_pelanggan` bertipe BIGINT dan kolom `total_tagihan` ada.
 2. **Python**: Clone repo, buat virtualenv, lalu `pip install -r requirements.txt`.
 3. **Konfigurasi**: salin `.env.example` menjadi `.env`, lalu isi `SECRET_KEY` dan kredensial MySQL di sana. File `.env` sudah di-ignore git, jadi kredensial tidak ikut ter-commit.
@@ -35,3 +35,11 @@ Aplikasi ini memudahkan pelanggan pascabayar dalam mencatat penggunaan dan memba
 5. **Deploy (PythonAnywhere)**: Atur path project, WSGI file, environment variable, dan reload aplikasi.
 
 Database? Kirim Email ke: kandarlubis31@gmail.com
+
+---
+
+## English
+
+**Aplikasi Pembayaran Listrik Pascabayar** is a Flask and MySQL application for managing postpaid electricity bills.
+
+It covers multi-level login (admin and customer), customer and consumption records, automatic billing through database triggers, an interactive usage dashboard, and bill payment — with Rupiah formatting across the interface.
